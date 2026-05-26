@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant Complete Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 Valorant Complete Analytics Dashboard</h1>
+            <p>Comprehensive statistics for Agents, Maps, Players, and Teams | Data: thespike.gg (April 14, 2022)</p>
+        </header>
+
+        <!-- Loading indicator -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading data...</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs" id="tabs">
+            <button class="tab-btn active" data-tab="agents">🎯 Agents</button>
+            <button class="tab-btn" data-tab="maps">🗺️ Maps</button>
+            <button class="tab-btn" data-tab="players">👤 Players</button>
+            <button class="tab-btn" data-tab="teams">🏆 Teams</button>
+        </div>
+
+        <!-- Agents Tab -->
+        <div id="tab-agents" class="tab-content active">
+            <div class="controls">
+                <div class="control-group">
+                    <label>📊 Sort bar chart by:</label>
+                    <select id="agentSort">
+                        <option value="pick_rate">Pick Rate (High-Low)</option>
+                        <option value="rating">Rating (High-Low)</option>
+                        <option value="K/D">K/D Ratio (High-Low)</option>
+                        <option value="agent">Agent Name (A-Z)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>🔄 Scatter plot metric:</label>
+                    <select id="agentMetric">
+                        <option value="rating">⭐ Rating</option>
+                        <option value="K/D">🔫 K/D Ratio</option>
+                        <option value="ACS">💥 ACS</option>
+                        <option value="ADR">🎯 ADR</option>
+                        <option value="KPR">🗡️ KPR</option>
+                    </select>
+                </div>
+            </div>
+            <div class="charts">
+                <div class="chart-container">
+                    <h2>📊 Pick Rate by Agent</h2>
+                    <div id="agentBarChart"></div>
+                </div>
+                <div class="chart-container">
+                    <h2>🔄 Pick Rate vs Selected Metric</h2>
+                    <div id="agentScatterPlot"></div>
+                </div>
+            </div>
+            <div class="summary">
+                <div class="summary-card">
+                    <h3>📈 Agent Insights</h3>
+                    <div id="agentInsights"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maps Tab -->
+        <div id="tab-maps" class="tab-content">
+            <div class="controls">
+                <div class="control-group">
+                    <label>📊 Chart type:</label>
+                    <select id="mapChartType">
+                        <option value="winrate">Attack vs Defense Win Rate</option>
+                        <option value="played">Maps Played Distribution</option>
+                        <option value="conversion">Second Round Conversion</option>
+                    </select>
+                </div>
+            </div>
+            <div class="charts">
+                <div class="chart-container full-width">
+                    <h2>🗺️ Map Statistics</h2>
+                    <div id="mapChart"></div>
+                </div>
+            </div>
+            <div class="summary">
+                <div class="summary-card">
+                    <h3>🗺️ Map Insights</h3>
+                    <div id="mapInsights"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Players Tab -->
+        <div id="tab-players" class="tab-content">
+            <div class="controls">
+                <div class="control-group">
+                    <label>👥 Filter by country:</label>
+                    <select id="countryFilter">
+                        <option value="all">All Countries</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>🏆 Filter by team:</label>
+                    <select id="teamFilter">
+                        <option value="all">All Teams</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>📊 Metric for histogram:</label>
+                    <select id="playerMetric">
+                        <option value="rating">⭐ Rating</option>
+                        <option value="ACS">💥 ACS</option>
+                        <option value="K/D">🔫 K/D Ratio</option>
+                        <option value="ADR">🎯 ADR</option>
+                    </select>
+                </div>
+            </div>
+            <div class="charts">
+                <div class="chart-container">
+                    <h2>📊 Player Statistics Distribution</h2>
+                    <div id="playerHistogram"></div>
+                </div>
+                <div class="chart-container">
+                    <h2>🏆 Top 10 Players by Rating</h2>
+                    <div id="playerTop10"></div>
+                </div>
+            </div>
+            <div class="summary">
+                <div class="summary-card">
+                    <h3>👤 Player Insights</h3>
+                    <div id="playerInsights"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teams Tab -->
+        <div id="tab-teams" class="tab-content">
+            <div class="controls">
+                <div class="control-group">
+                    <label>🏆 Sort teams by:</label>
+                    <select id="teamSort">
+                        <option value="maps_won%">Map Win % (High-Low)</option>
+                        <option value="maps_played">Maps Played (High-Low)</option>
+                        <option value="team">Team Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="charts">
+                <div class="chart-container full-width">
+                    <h2>🏆 Team Performance</h2>
+                    <div id="teamChart"></div>
+                </div>
+            </div>
+            <div class="summary">
+                <div class="summary-card">
+                    <h3>🏆 Team Insights</h3>
+                    <div id="teamInsights"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tooltip" class="tooltip"></div>
+    </div>
+
+    <!-- JavaScript modules -->
+    <script src="js/utils.js"></script>
+    <script src="js/dataLoader.js"></script>
+    <script src="js/agents.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/players.js"></script>
+    <script src="js/teams.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
