@@ -33,15 +33,3 @@ Interactive dashboard for visualizing Valorant statistics including agents, maps
 - JavaScript
 - D3.js v7
 
-valorant-dashboard/
-├── index.html          # Main HTML file
-├── css/style.css       # Styling
-├── js/                 # JavaScript modules
-│   ├── utils.js        # Shared helper functions
-│   ├── dataLoader.js   # CSV loading
-│   ├── agents.js       # Agents visualizations
-│   ├── maps.js         # Maps visualizations
-│   ├── players.js      # Players visualizations
-│   ├── teams.js        # Teams visualizations
-│   └── main.js         # Main initialization
-└── data/               # CSV data files
