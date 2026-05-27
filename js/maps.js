@@ -28,6 +28,14 @@ function extractPlayedCount(value) {
     return 0;
 }
 
+// POTPUNO OČISTI container - važno za sprečavanje preklapanja
+function clearMapContainer() {
+    const container = document.getElementById("mapChart");
+    if (container) {
+        container.innerHTML = "";
+    }
+}
+
 // Draw map win rate chart
 function drawMapWinRateChart(data) {
     if (!data || data.length === 0) {
@@ -35,7 +43,7 @@ function drawMapWinRateChart(data) {
         return;
     }
     
-    clearContainer("mapChart");
+    clearMapContainer();
     
     const container = document.getElementById("mapChart");
     const containerWidth = container.clientWidth - 40;
@@ -66,6 +74,7 @@ function drawMapWinRateChart(data) {
         .data(data)
         .enter()
         .append("rect")
+        .attr("class", "atk-bar")
         .attr("x", d => x(d.map))
         .attr("y", d => y(extractNumber(d.atk_win_rate)))
         .attr("width", x.bandwidth() / 2)
@@ -81,6 +90,7 @@ function drawMapWinRateChart(data) {
         .data(data)
         .enter()
         .append("rect")
+        .attr("class", "def-bar")
         .attr("x", d => x(d.map) + x.bandwidth() / 2)
         .attr("y", d => y(extractNumber(d.def_win_rate)))
         .attr("width", x.bandwidth() / 2)
@@ -91,7 +101,9 @@ function drawMapWinRateChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
+    // X axis
     svg.append("g")
+        .attr("class", "x-axis")
         .attr("transform", `translate(0,${chartHeight})`)
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -100,7 +112,9 @@ function drawMapWinRateChart(data) {
         .style("fill", "#ccc")
         .style("font-size", "11px");
     
+    // Y axis
     svg.append("g")
+        .attr("class", "y-axis")
         .call(d3.axisLeft(y).ticks(6).tickFormat(d => d + "%"))
         .style("color", "#ccc");
     
@@ -118,7 +132,7 @@ function drawMapPlayedChart(data) {
         return;
     }
     
-    clearContainer("mapChart");
+    clearMapContainer();
     
     const container = document.getElementById("mapChart");
     const containerWidth = container.clientWidth - 40;
@@ -128,7 +142,7 @@ function drawMapPlayedChart(data) {
     const svg = d3.select("#mapChart")
         .append("svg")
         .attr("width", "100%")
-        .attr("height", size)
+        .attr("height", size + 50)
         .attr("viewBox", `0 0 ${size + 120} ${size}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .append("g")
@@ -157,6 +171,7 @@ function drawMapPlayedChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
+    // Legend
     const legendX = radius + 25;
     let legendY = -radius + 20;
     
@@ -184,7 +199,7 @@ function drawMapConversionChart(data) {
         return;
     }
     
-    clearContainer("mapChart");
+    clearMapContainer();
     
     const container = document.getElementById("mapChart");
     const containerWidth = container.clientWidth - 40;
@@ -210,10 +225,12 @@ function drawMapConversionChart(data) {
         .domain([70, 100])
         .range([chartHeight, 0]);
     
+    // Attack conversion (red)
     svg.selectAll(".atk-conv-bar")
         .data(data)
         .enter()
         .append("rect")
+        .attr("class", "atk-conv-bar")
         .attr("x", d => x(d.map))
         .attr("y", d => y(extractNumber(d.second_round_conversion_atk)))
         .attr("width", x.bandwidth() / 2)
@@ -224,10 +241,12 @@ function drawMapConversionChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
+    // Defense conversion (green)
     svg.selectAll(".def-conv-bar")
         .data(data)
         .enter()
         .append("rect")
+        .attr("class", "def-conv-bar")
         .attr("x", d => x(d.map) + x.bandwidth() / 2)
         .attr("y", d => y(extractNumber(d.second_round_conversion_def)))
         .attr("width", x.bandwidth() / 2)
@@ -238,22 +257,37 @@ function drawMapConversionChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
+    // X axis
     svg.append("g")
+        .attr("class", "x-axis-conv")
         .attr("transform", `translate(0,${chartHeight})`)
         .call(d3.axisBottom(x))
         .selectAll("text")
         .attr("transform", "rotate(-30)")
         .style("text-anchor", "end")
-        .style("fill", "#ccc");
+        .style("fill", "#ccc")
+        .style("font-size", "11px");
     
+    // Y axis
     svg.append("g")
+        .attr("class", "y-axis-conv")
         .call(d3.axisLeft(y).ticks(6).tickFormat(d => d + "%"))
         .style("color", "#ccc");
     
+    // Title
+    svg.append("text")
+        .attr("x", w / 2)
+        .attr("y", -15)
+        .attr("text-anchor", "middle")
+        .style("fill", "#ff8c00")
+        .style("font-size", "13px")
+        .style("font-weight", "bold")
+    
+    // Legend
     svg.append("rect").attr("x", w - 180).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#ff4655").attr("rx", 2);
-    svg.append("text").attr("x", w - 165).attr("y", -15).text("Attack Conv.").style("fill", "#ccc").style("font-size", "10px");
-    svg.append("rect").attr("x", w - 85).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#2a9d8f").attr("rx", 2);
-    svg.append("text").attr("x", w - 70).attr("y", -15).text("Defense Conv.").style("fill", "#ccc").style("font-size", "10px");
+    svg.append("text").attr("x", w - 165).attr("y", -15).text("Attack Conversion").style("fill", "#ccc").style("font-size", "10px");
+    svg.append("rect").attr("x", w - 75).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#2a9d8f").attr("rx", 2);
+    svg.append("text").attr("x", w - 60).attr("y", -15).text("Defense Conversion").style("fill", "#ccc").style("font-size", "10px");
 }
 
 // Update map insights
@@ -276,21 +310,24 @@ function updateMapInsights(data) {
     `;
 }
 
-// Main render function for maps
+// Main render function
 function renderMaps() {
-    console.log("🔵 renderMaps called");
+    console.log("🔵 renderMaps called, type:", currentMapChartType);
     const data = getData("maps");
-    console.log("Maps data:", data);
     
     if (data.length === 0) {
-        showPlaceholder("mapChart", "No maps.csv loaded. Make sure the file exists in the data folder.");
+        showPlaceholder("mapChart", "No maps.csv loaded.");
         document.getElementById("mapInsights").innerHTML = '<div class="insight-item">Waiting for data...</div>';
         return;
     }
     
-    if (currentMapChartType === "winrate") drawMapWinRateChart(data);
-    else if (currentMapChartType === "played") drawMapPlayedChart(data);
-    else if (currentMapChartType === "conversion") drawMapConversionChart(data);
+    if (currentMapChartType === "winrate") {
+        drawMapWinRateChart(data);
+    } else if (currentMapChartType === "played") {
+        drawMapPlayedChart(data);
+    } else if (currentMapChartType === "conversion") {
+        drawMapConversionChart(data);
+    }
     
     updateMapInsights(data);
 }
