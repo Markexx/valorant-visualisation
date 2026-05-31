@@ -1,6 +1,3 @@
-// ==================== MAIN - Initialization and Tab Switching ====================
-
-// Tab switching logic
 function setupTabListeners() {
     document.querySelectorAll(".tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -16,7 +13,6 @@ function setupTabListeners() {
     });
 }
 
-// Render currently active tab
 function renderActiveTab() {
     const activeTab = document.querySelector(".tab-btn.active").dataset.tab;
     
@@ -36,9 +32,7 @@ function renderActiveTab() {
     }
 }
 
-// Setup control event listeners
 function setupControlListeners() {
-    // Agents controls
     const agentSort = document.getElementById("agentSort");
     if (agentSort) {
         agentSort.addEventListener("change", e => {
@@ -55,7 +49,6 @@ function setupControlListeners() {
         });
     }
     
-    // Maps controls
     const mapChartType = document.getElementById("mapChartType");
     if (mapChartType) {
         mapChartType.addEventListener("change", e => {
@@ -64,7 +57,6 @@ function setupControlListeners() {
         });
     }
     
-    // Players controls - ISPRAVLJENO (koristi window varijable)
     const countryFilterSelect = document.getElementById("countryFilter");
     if (countryFilterSelect) {
         countryFilterSelect.addEventListener("change", e => {
@@ -89,7 +81,6 @@ function setupControlListeners() {
         });
     }
     
-    // Teams controls
     const teamSort = document.getElementById("teamSort");
     if (teamSort) {
         teamSort.addEventListener("change", e => {
@@ -99,12 +90,10 @@ function setupControlListeners() {
     }
 }
 
-// Initialize the application
 async function init() {
     setupTabListeners();
     setupControlListeners();
     await loadAllData();
 }
 
-// Start the app
 init();
