@@ -1,4 +1,3 @@
-// Global data stores
 let agentsData = [];
 let mapsData = [];
 let playersData = [];
@@ -13,12 +12,10 @@ let currentTeamSort = "maps_won%";
 let countryFilter = "all";
 let teamFilter = "all";
 
-// Chart dimensions
 const width = 500;
 const height = 400;
 const margin = { top: 25, right: 30, bottom: 60, left: 65 };
 
-// DOM Elements
 const agentsFile = document.getElementById("agentsFile");
 const mapsFile = document.getElementById("mapsFile");
 const playersFile = document.getElementById("playersFile");
@@ -26,7 +23,6 @@ const teamsFile = document.getElementById("teamsFile");
 const fileStatus = document.getElementById("fileStatus");
 const tabs = document.getElementById("tabs");
 
-// File counters
 let loadedFiles = {
     agents: false,
     maps: false,
@@ -34,7 +30,6 @@ let loadedFiles = {
     teams: false
 };
 
-// Event listeners for file uploads
 agentsFile.addEventListener("change", (e) => loadCSV(e.target.files[0], "agents"));
 mapsFile.addEventListener("change", (e) => loadCSV(e.target.files[0], "maps"));
 playersFile.addEventListener("change", (e) => loadCSV(e.target.files[0], "players"));
@@ -62,7 +57,6 @@ function parseCSV(csvContent, type) {
     for (let i = 1; i < rows.length; i++) {
         if (rows[i].trim() === "") continue;
         
-        // Handle quoted values properly
         let row = rows[i];
         let values = [];
         let inQuote = false;
@@ -83,13 +77,11 @@ function parseCSV(csvContent, type) {
         const item = {};
         for (let j = 0; j < headers.length; j++) {
             let val = values[j] || "";
-            // Remove quotes if present
             val = val.replace(/^"|"$/g, '');
             
             if (headers[j] !== "agent" && headers[j] !== "map" && 
                 headers[j] !== "player" && headers[j] !== "team" &&
                 headers[j] !== "country") {
-                // Try to parse as number
                 if (val.includes("%")) {
                     val = parseFloat(val.replace("%", ""));
                 } else {
@@ -103,7 +95,6 @@ function parseCSV(csvContent, type) {
         if (Object.keys(item).length > 1) data.push(item);
     }
     
-    // Store data
     switch(type) {
         case "agents":
             agentsData = data;
@@ -126,12 +117,10 @@ function parseCSV(csvContent, type) {
     
     updateFileStatus(`✅ Loaded: ${data.length} records from ${type}.csv`, "#00ff88");
     
-    // Show tabs if at least one file is loaded
     if (loadedFiles.agents || loadedFiles.maps || loadedFiles.players || loadedFiles.teams) {
         tabs.style.display = "flex";
     }
     
-    // Render active tab
     renderActiveTab();
 }
 
@@ -169,7 +158,6 @@ function showPlaceholder(tab, message) {
     });
 }
 
-// ==================== AGENTS VISUALIZATION ====================
 function renderAgents() {
     const sorted = sortAgentsData(agentsData, currentAgentSort);
     drawAgentBarChart(sorted);
@@ -249,7 +237,6 @@ function updateAgentInsights(data) {
     `;
 }
 
-// ==================== MAPS VISUALIZATION ====================
 function renderMaps() {
     if (currentMapChartType === "winrate") drawMapWinRateChart();
     else if (currentMapChartType === "played") drawMapPlayedChart();
@@ -329,7 +316,6 @@ function updateMapInsights() {
     `;
 }
 
-// ==================== PLAYERS VISUALIZATION ====================
 function updatePlayerFilters() {
     const countries = [...new Set(playersData.map(p => p.country).filter(c => c && c !== "null"))];
     const teams = [...new Set(playersData.map(p => p.team).filter(t => t && t !== "null"))];
@@ -411,7 +397,6 @@ function updatePlayerInsights(data) {
     `;
 }
 
-// ==================== TEAMS VISUALIZATION ====================
 function renderTeams() {
     const sorted = sortTeamsData(teamsData, currentTeamSort);
     drawTeamChart(sorted);
@@ -463,7 +448,6 @@ function updateTeamInsights(data) {
     `;
 }
 
-// ==================== TOOLTIP & EVENT HANDLERS ====================
 function showTooltip(event, html) {
     d3.select("#tooltip").style("opacity", 1).html(html);
 }
@@ -476,7 +460,6 @@ function hideTooltip() {
     d3.select("#tooltip").style("opacity", 0);
 }
 
-// Tab switching
 document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -487,7 +470,6 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
     });
 });
 
-// Control event listeners
 document.getElementById("agentSort")?.addEventListener("change", e => { currentAgentSort = e.target.value; renderAgents(); });
 document.getElementById("agentMetric")?.addEventListener("change", e => { currentAgentMetric = e.target.value; renderAgents(); });
 document.getElementById("mapChartType")?.addEventListener("change", e => { currentMapChartType = e.target.value; renderMaps(); });
