@@ -1,8 +1,5 @@
-// ==================== MAPS MODULE ====================
-
 let currentMapChartType = "winrate";
 
-// Helper: Extract number from messy string
 function extractNumber(value) {
     if (value === undefined || value === null) return 0;
     if (typeof value === 'number') return value;
@@ -15,7 +12,6 @@ function extractNumber(value) {
     return 0;
 }
 
-// Helper: Extract played count
 function extractPlayedCount(value) {
     if (value === undefined || value === null) return 0;
     if (typeof value === 'number') return value;
@@ -28,7 +24,6 @@ function extractPlayedCount(value) {
     return 0;
 }
 
-// POTPUNO OČISTI container - važno za sprečavanje preklapanja
 function clearMapContainer() {
     const container = document.getElementById("mapChart");
     if (container) {
@@ -36,7 +31,6 @@ function clearMapContainer() {
     }
 }
 
-// Draw map win rate chart
 function drawMapWinRateChart(data) {
     if (!data || data.length === 0) {
         showPlaceholder("mapChart", "No map data available");
@@ -69,7 +63,6 @@ function drawMapWinRateChart(data) {
         .domain([0, 100])
         .range([chartHeight, 0]);
     
-    // Attack bars (red)
     svg.selectAll(".atk-bar")
         .data(data)
         .enter()
@@ -85,7 +78,6 @@ function drawMapWinRateChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
-    // Defense bars (green)
     svg.selectAll(".def-bar")
         .data(data)
         .enter()
@@ -101,7 +93,6 @@ function drawMapWinRateChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
-    // X axis
     svg.append("g")
         .attr("class", "x-axis")
         .attr("transform", `translate(0,${chartHeight})`)
@@ -112,20 +103,17 @@ function drawMapWinRateChart(data) {
         .style("fill", "#ccc")
         .style("font-size", "11px");
     
-    // Y axis
     svg.append("g")
         .attr("class", "y-axis")
         .call(d3.axisLeft(y).ticks(6).tickFormat(d => d + "%"))
         .style("color", "#ccc");
     
-    // Legend
     svg.append("rect").attr("x", w - 130).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#ff4655").attr("rx", 2);
     svg.append("text").attr("x", w - 115).attr("y", -15).text("Attack").style("fill", "#ccc").style("font-size", "11px");
     svg.append("rect").attr("x", w - 65).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#2a9d8f").attr("rx", 2);
     svg.append("text").attr("x", w - 50).attr("y", -15).text("Defense").style("fill", "#ccc").style("font-size", "11px");
 }
 
-// Draw pie chart
 function drawMapPlayedChart(data) {
     if (!data || data.length === 0) {
         showPlaceholder("mapChart", "No map data available");
@@ -171,7 +159,6 @@ function drawMapPlayedChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
-    // Legend
     const legendX = radius + 25;
     let legendY = -radius + 20;
     
@@ -192,7 +179,6 @@ function drawMapPlayedChart(data) {
     });
 }
 
-// Draw conversion chart
 function drawMapConversionChart(data) {
     if (!data || data.length === 0) {
         showPlaceholder("mapChart", "No map data available");
@@ -225,7 +211,6 @@ function drawMapConversionChart(data) {
         .domain([70, 100])
         .range([chartHeight, 0]);
     
-    // Attack conversion (red)
     svg.selectAll(".atk-conv-bar")
         .data(data)
         .enter()
@@ -241,7 +226,6 @@ function drawMapConversionChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
-    // Defense conversion (green)
     svg.selectAll(".def-conv-bar")
         .data(data)
         .enter()
@@ -257,7 +241,6 @@ function drawMapConversionChart(data) {
         .on("mousemove", moveTooltip)
         .on("mouseout", hideTooltip);
     
-    // X axis
     svg.append("g")
         .attr("class", "x-axis-conv")
         .attr("transform", `translate(0,${chartHeight})`)
@@ -268,13 +251,11 @@ function drawMapConversionChart(data) {
         .style("fill", "#ccc")
         .style("font-size", "11px");
     
-    // Y axis
     svg.append("g")
         .attr("class", "y-axis-conv")
         .call(d3.axisLeft(y).ticks(6).tickFormat(d => d + "%"))
         .style("color", "#ccc");
     
-    // Title
     svg.append("text")
         .attr("x", w / 2)
         .attr("y", -15)
@@ -283,14 +264,12 @@ function drawMapConversionChart(data) {
         .style("font-size", "13px")
         .style("font-weight", "bold")
     
-    // Legend
     svg.append("rect").attr("x", w - 180).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#ff4655").attr("rx", 2);
     svg.append("text").attr("x", w - 165).attr("y", -15).text("Attack Conversion").style("fill", "#ccc").style("font-size", "10px");
     svg.append("rect").attr("x", w - 75).attr("y", -25).attr("width", 12).attr("height", 12).attr("fill", "#2a9d8f").attr("rx", 2);
     svg.append("text").attr("x", w - 60).attr("y", -15).text("Defense Conversion").style("fill", "#ccc").style("font-size", "10px");
 }
 
-// Update map insights
 function updateMapInsights(data) {
     if (!data || data.length === 0) {
         document.getElementById("mapInsights").innerHTML = '<div class="insight-item">No data available</div>';
@@ -310,7 +289,6 @@ function updateMapInsights(data) {
     `;
 }
 
-// Main render function
 function renderMaps() {
     console.log("🔵 renderMaps called, type:", currentMapChartType);
     const data = getData("maps");
