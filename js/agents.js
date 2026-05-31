@@ -1,9 +1,6 @@
-// ==================== AGENTS MODULE ====================
-
 let currentAgentSort = "pick_rate";
 let currentAgentMetric = "rating";
 
-// Sort agents data
 function sortAgentsData(data, sortBy) {
     const sorted = [...data];
     switch(sortBy) {
@@ -16,7 +13,6 @@ function sortAgentsData(data, sortBy) {
     return sorted;
 }
 
-// Draw bar chart for agents SA ANIMACIJOM
 function drawAgentBarChart(data) {
     if (!data || data.length === 0) {
         showPlaceholder("agentBarChart", "No agent data available");
@@ -28,12 +24,10 @@ function drawAgentBarChart(data) {
     const h = CHART_HEIGHT;
     const m = CHART_MARGIN;
     
-    // Provjeri postoji li već SVG, ako ne - kreiraj
     let svg = d3.select("#agentBarChart").select("svg");
     let isFirstRender = svg.empty();
     
     if (isFirstRender) {
-        // Prvi put - kreiraj SVG strukturu
         svg = d3.select("#agentBarChart")
             .append("svg")
             .attr("width", w + m.left + m.right)
@@ -41,11 +35,9 @@ function drawAgentBarChart(data) {
             .append("g")
             .attr("transform", `translate(${m.left},${m.top})`);
     } else {
-        // Već postoji - selektiraj postojeću grupu
         svg = d3.select("#agentBarChart svg g");
     }
     
-    // Skale
     const x = d3.scaleBand()
         .domain(sortedData.map(d => d.agent))
         .range([0, w])
@@ -59,7 +51,6 @@ function drawAgentBarChart(data) {
         .domain([0, 50, 80])
         .range(["#3a86ff", "#ffbe0b", "#ff4655"]);
     
-    // ANIMIRAJ X OS
     svg.selectAll(".x-axis").remove();
     svg.append("g")
         .attr("class", "x-axis")
@@ -71,14 +62,12 @@ function drawAgentBarChart(data) {
         .style("fill", "#ccc")
         .style("font-size", "10px");
     
-    // ANIMIRAJ Y OS
     svg.selectAll(".y-axis").remove();
     svg.append("g")
         .attr("class", "y-axis")
         .call(d3.axisLeft(y).ticks(6))
         .style("color", "#ccc");
     
-    // Ažuriraj labele samo prvi put
     if (isFirstRender) {
         svg.append("text")
             .attr("class", "x-label")
@@ -100,11 +89,9 @@ function drawAgentBarChart(data) {
             .text("Pick Rate (%)");
     }
     
-    // ANIMIRANI STUPCI - JOIN s ključem po agentu
     const bars = svg.selectAll(".bar")
         .data(sortedData, d => d.agent);
     
-    // IZLAZNA ANIMACIJA (ukloni stare stupce)
     bars.exit()
         .transition()
         .duration(500)
@@ -112,7 +99,6 @@ function drawAgentBarChart(data) {
         .attr("height", 0)
         .remove();
     
-    // ULAZNA ANIMACIJA (dodaj nove stupce)
     bars.enter()
         .append("rect")
         .attr("class", "bar")
@@ -130,7 +116,6 @@ function drawAgentBarChart(data) {
         .attr("y", d => y(d.pick_rate))
         .attr("height", d => h - y(d.pick_rate));
     
-    // AŽURIRANJE (tranzicija za postojeće stupce)
     bars.transition()
         .duration(500)
         .attr("x", d => x(d.agent))
@@ -140,7 +125,6 @@ function drawAgentBarChart(data) {
         .attr("fill", d => colorScale(d.pick_rate));
 }
 
-// Draw scatter plot for agents SA ANIMACIJOM
 function drawAgentScatterPlot(data, metric) {
     if (!data || data.length === 0) {
         showPlaceholder("agentScatterPlot", "No agent data available");
@@ -151,7 +135,6 @@ function drawAgentScatterPlot(data, metric) {
     const h = CHART_HEIGHT;
     const m = CHART_MARGIN;
     
-    // Provjeri postoji li već SVG
     let svg = d3.select("#agentScatterPlot").select("svg");
     let isFirstRender = svg.empty();
     
@@ -166,7 +149,6 @@ function drawAgentScatterPlot(data, metric) {
         svg = d3.select("#agentScatterPlot svg g");
     }
     
-    // Skale
     const x = d3.scaleLinear()
         .domain([0, d3.max(data, d => d.pick_rate) + 5])
         .range([0, w]);
@@ -176,7 +158,6 @@ function drawAgentScatterPlot(data, metric) {
         .domain([yDomain[0] - Math.abs(yDomain[0] * 0.05), yDomain[1] + Math.abs(yDomain[1] * 0.05)])
         .range([h, 0]);
     
-    // ANIMIRAJ X OS
     svg.selectAll(".x-axis-scatter").remove();
     svg.append("g")
         .attr("class", "x-axis-scatter")
@@ -184,14 +165,12 @@ function drawAgentScatterPlot(data, metric) {
         .call(d3.axisBottom(x).ticks(6))
         .style("color", "#ccc");
     
-    // ANIMIRAJ Y OS
     svg.selectAll(".y-axis-scatter").remove();
     svg.append("g")
         .attr("class", "y-axis-scatter")
         .call(d3.axisLeft(y).ticks(6))
         .style("color", "#ccc");
     
-    // Dodaj labele samo prvi put
     if (isFirstRender) {
         svg.append("text")
             .attr("class", "x-label-scatter")
@@ -216,24 +195,20 @@ function drawAgentScatterPlot(data, metric) {
             .text(metricLabel);
     }
     
-    // Ažuriraj Y labelu ako se promijenio metric
     let metricLabel = metric;
     if (metric === "K/D") metricLabel = "K/D Ratio";
     svg.selectAll(".y-label-scatter")
         .text(metricLabel);
     
-    // ANIMIRANE TOČKE
     const dots = svg.selectAll(".scatter-dot")
         .data(data, d => d.agent);
     
-    // IZLAZNA ANIMACIJA (ukloni stare točke)
     dots.exit()
         .transition()
         .duration(500)
         .attr("r", 0)
         .remove();
     
-    // ULAZNA ANIMACIJA (dodaj nove točke)
     dots.enter()
         .append("circle")
         .attr("class", "scatter-dot")
@@ -249,7 +224,6 @@ function drawAgentScatterPlot(data, metric) {
         .duration(500)
         .attr("r", 7);
     
-    // AŽURIRANJE (tranzicija za postojeće točke)
     dots.transition()
         .duration(500)
         .attr("cx", d => x(d.pick_rate))
@@ -258,7 +232,6 @@ function drawAgentScatterPlot(data, metric) {
         .attr("r", 7);
 }
 
-// Update insights for agents
 function updateAgentInsights(data) {
     if (!data || data.length === 0) {
         document.getElementById("agentInsights").innerHTML = '<div class="insight-item">No data available</div>';
@@ -278,7 +251,6 @@ function updateAgentInsights(data) {
     `;
 }
 
-// Main render function for agents
 function renderAgents() {
     const data = getData("agents");
     if (data.length === 0) {
