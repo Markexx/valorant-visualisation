@@ -17,7 +17,6 @@ body {
     padding: 20px;
 }
 
-/* Header */
 header {
     text-align: center;
     margin-bottom: 30px;
@@ -41,7 +40,6 @@ header p {
     font-size: 0.85rem;
 }
 
-/* Loading */
 .loading {
     display: flex;
     flex-direction: column;
@@ -71,7 +69,6 @@ header p {
     100% { transform: rotate(360deg); }
 }
 
-/* Tabs */
 .tabs {
     display: flex;
     justify-content: center;
@@ -111,7 +108,6 @@ header p {
     display: block;
 }
 
-/* Controls */
 .controls {
     display: flex;
     justify-content: center;
@@ -144,7 +140,6 @@ select {
     font-size: 0.85rem;
 }
 
-/* Charts */
 .charts {
     display: flex;
     flex-wrap: wrap;
@@ -178,7 +173,6 @@ select {
     color: #ff8c00;
 }
 
-/* Summary */
 .summary {
     margin-bottom: 30px;
 }
@@ -222,7 +216,6 @@ select {
     color: #aaa;
 }
 
-/* Tooltip */
 .tooltip {
     position: absolute;
     background: #1e1a3a;
@@ -244,7 +237,6 @@ select {
     color: #ff8c00;
 }
 
-/* Chart elements */
 .bar, .team-bar {
     cursor: pointer;
     transition: opacity 0.2s;
@@ -274,7 +266,6 @@ select {
     stroke: #555;
 }
 
-/* Responsive */
 @media (max-width: 1100px) {
     .chart-container {
         min-width: 100%;
@@ -285,7 +276,6 @@ select {
     }
 }
 
-/* Centriranje grafova */
 .chart-container.full-width {
     display: flex;
     flex-direction: column;
@@ -311,7 +301,6 @@ select {
     margin: 0 auto;
 }
 
-/* Za player histogram i top10 */
 #playerHistogram, #playerTop10 {
     display: flex;
     justify-content: center;
@@ -325,7 +314,6 @@ select {
     margin: 0 auto;
 }
 
-/* Općenito za sve chart containere */
 .chart-container {
     display: flex;
     flex-direction: column;
