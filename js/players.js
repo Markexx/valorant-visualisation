@@ -1,11 +1,7 @@
-// ==================== PLAYERS MODULE ====================
-
-// Global variables for filters
 window.currentPlayerMetric = window.currentPlayerMetric || "rating";
 window.currentCountryFilter = window.currentCountryFilter || "all";
 window.currentTeamFilter = window.currentTeamFilter || "all";
 
-// Update filter dropdowns
 function updatePlayerFilters() {
     const data = getData("players");
     if (!data || data.length === 0) return;
@@ -29,7 +25,6 @@ function updatePlayerFilters() {
     }
 }
 
-// Filter players
 function filterPlayers(data) {
     let filtered = [...data];
     if (window.currentCountryFilter && window.currentCountryFilter !== "all") {
@@ -42,9 +37,7 @@ function filterPlayers(data) {
     return filtered;
 }
 
-// Draw histogram SA ANIMACIJOM
 function drawPlayerHistogram(data) {
-    // Prvo očisti placeholder ako postoji
     clearContainer("playerHistogram");
     
     if (!data || data.length === 0) {
@@ -100,7 +93,6 @@ function drawPlayerHistogram(data) {
         .domain([0, d3.max(binsData, d => d.length)])
         .range([h, 0]);
     
-    // Ažuriraj X os
     svg.selectAll(".x-axis-hist").remove();
     svg.append("g")
         .attr("class", "x-axis-hist")
@@ -108,14 +100,12 @@ function drawPlayerHistogram(data) {
         .call(d3.axisBottom(x).ticks(8))
         .style("color", "#ccc");
     
-    // Ažuriraj Y os
     svg.selectAll(".y-axis-hist").remove();
     svg.append("g")
         .attr("class", "y-axis-hist")
         .call(d3.axisLeft(y))
         .style("color", "#ccc");
     
-    // Labele samo prvi put
     if (isFirstRender) {
         svg.append("text")
             .attr("class", "title-hist")
@@ -147,11 +137,9 @@ function drawPlayerHistogram(data) {
             .text("Number of Players");
     }
     
-    // Ažuriraj title s brojem igrača
     svg.selectAll(".title-hist")
         .text(`Distribution of ${metric} (${values.length} players)`);
     
-    // ANIMIRANI BAROVI
     const bars = svg.selectAll(".hist-bar").data(binsData);
     
     bars.exit()
@@ -180,9 +168,7 @@ function drawPlayerHistogram(data) {
         .attr("height", d => h - y(d.length));
 }
 
-// Draw top 10 players SA ANIMACIJOM
 function drawPlayerTop10(data) {
-    // Prvo očisti placeholder ako postoji
     clearContainer("playerTop10");
     
     if (!data || data.length === 0) {
@@ -231,7 +217,6 @@ function drawPlayerTop10(data) {
         .domain([0, d3.max(top10, d => d.rating) + 0.1])
         .range([h, 0]);
     
-    // Ažuriraj X os
     svg.selectAll(".x-axis-top10").remove();
     svg.append("g")
         .attr("class", "x-axis-top10")
@@ -243,14 +228,12 @@ function drawPlayerTop10(data) {
         .style("fill", "#ccc")
         .style("font-size", "9px");
     
-    // Ažuriraj Y os
     svg.selectAll(".y-axis-top10").remove();
     svg.append("g")
         .attr("class", "y-axis-top10")
         .call(d3.axisLeft(y))
         .style("color", "#ccc");
     
-    // Labele samo prvi put
     if (isFirstRender) {
         svg.append("text")
             .attr("class", "title-top10")
@@ -282,11 +265,9 @@ function drawPlayerTop10(data) {
             .text("Rating");
     }
     
-    // Ažuriraj title
     svg.selectAll(".title-top10")
         .text(`Top ${top10.length} Players by Rating`);
     
-    // ANIMIRANI BAROVI
     const bars = svg.selectAll(".top10-bar").data(top10, d => d.player);
     
     bars.exit()
@@ -318,7 +299,6 @@ function drawPlayerTop10(data) {
         .attr("height", d => h - y(d.rating));
 }
 
-// Update player insights
 function updatePlayerInsights(data) {
     if (!data || data.length === 0) {
         document.getElementById("playerInsights").innerHTML = '<div class="insight-item">No data available</div>';
@@ -336,7 +316,6 @@ function updatePlayerInsights(data) {
     `;
 }
 
-// Main render function
 function renderPlayers() {
     console.log("🔵 renderPlayers called");
     const allData = getData("players");
@@ -351,7 +330,6 @@ function renderPlayers() {
     
     const filteredData = filterPlayers(allData);
     
-    // Ako nema filtriranih podataka, prikaži placeholder za oba grafa
     if (filteredData.length === 0) {
         showPlaceholder("playerHistogram", "No players match the selected filters");
         showPlaceholder("playerTop10", "No players match the selected filters");
