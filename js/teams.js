@@ -1,8 +1,5 @@
-// ==================== TEAMS MODULE ====================
-
 let currentTeamSort = "maps_won%";
 
-// Helper: Get win percentage
 function getWinPercentage(team) {
     const val = team["maps_won%"];
     if (val === undefined || val === null) return 0;
@@ -11,12 +8,10 @@ function getWinPercentage(team) {
     return 0;
 }
 
-// Helper: Get matches played
 function getMapsPlayed(team) {
     return team.maps_played || 0;
 }
 
-// Sort teams data
 function sortTeamsData(data, sortBy) {
     const sorted = [...data];
     switch(sortBy) {
@@ -35,8 +30,6 @@ function sortTeamsData(data, sortBy) {
     return sorted.slice(0, 30);
 }
 
-// Draw horizontal bar chart SA ANIMACIJOM
-// Draw horizontal bar chart SA ANIMACIJOM I POSTOTCIMA
 function drawTeamChart(data) {
     if (!data || data.length === 0) {
         showPlaceholder("teamChart", "No team data available");
@@ -64,7 +57,6 @@ function drawTeamChart(data) {
             .attr("transform", `translate(${m.left},${m.top})`);
     } else {
         svg = d3.select("#teamChart svg g");
-        // Očisti stare labele da ih ponovno nacrtamo
         svg.selectAll(".team-label").remove();
     }
     
@@ -77,7 +69,6 @@ function drawTeamChart(data) {
         .domain([0, 100])
         .range([0, w]);
     
-    // Ažuriraj Y os
     svg.selectAll(".y-axis-team").remove();
     svg.append("g")
         .attr("class", "y-axis-team")
@@ -85,7 +76,6 @@ function drawTeamChart(data) {
         .style("color", "#ccc")
         .style("font-size", "9px");
     
-    // Ažuriraj X os
     svg.selectAll(".x-axis-team").remove();
     svg.append("g")
         .attr("class", "x-axis-team")
@@ -93,7 +83,6 @@ function drawTeamChart(data) {
         .call(d3.axisBottom(x).ticks(10).tickFormat(d => d + "%"))
         .style("color", "#ccc");
     
-    // Labele samo prvi put
     if (isFirstRender) {
         svg.append("text")
             .attr("class", "x-label-team")
@@ -115,7 +104,6 @@ function drawTeamChart(data) {
             .text("Team Performance by Match Win Rate");
     }
     
-    // ANIMIRANI BAROVI
     const bars = svg.selectAll(".team-bar").data(data, d => d.team);
     
     bars.exit()
@@ -143,9 +131,6 @@ function drawTeamChart(data) {
         .attr("width", d => x(getWinPercentage(d)))
         .attr("height", y.bandwidth());
     
-    // ============================================================
-    // VALUE LABELS (POSTOTCI) - DODANO NATRAG!
-    // ============================================================
     const labels = svg.selectAll(".team-label").data(data, d => d.team);
     
     labels.exit()
@@ -172,7 +157,6 @@ function drawTeamChart(data) {
         .text(d => getWinPercentage(d) + "%");
 }
 
-// Update team insights
 function updateTeamInsights(data) {
     if (!data || data.length === 0) {
         document.getElementById("teamInsights").innerHTML = '<div class="insight-item">No data available</div>';
@@ -190,7 +174,6 @@ function updateTeamInsights(data) {
     `;
 }
 
-// Main render function
 function renderTeams() {
     const allData = getData("teams");
     console.log("Teams data loaded:", allData.length);
@@ -206,7 +189,6 @@ function renderTeams() {
     updateTeamInsights(allData);
 }
 
-// Add event listener for sort dropdown
 document.addEventListener("DOMContentLoaded", () => {
     const teamSort = document.getElementById("teamSort");
     if (teamSort) {
