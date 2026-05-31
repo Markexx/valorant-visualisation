@@ -1,6 +1,3 @@
-// ==================== DATA LOADER ====================
-
-// Global data stores
 let agentsData = [];
 let mapsData = [];
 let playersData = [];
@@ -13,7 +10,6 @@ let allDataLoaded = {
     teams: false
 };
 
-// Parse CSV line (handles quotes and commas properly)
 function parseCSVLine(line, headers) {
     const values = [];
     let inQuote = false;
@@ -51,7 +47,6 @@ function parseCSVLine(line, headers) {
     return item;
 }
 
-// Parse full CSV content
 function parseCSV(csvContent) {
     const lines = csvContent.split("\n");
     const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, ''));
@@ -68,7 +63,6 @@ function parseCSV(csvContent) {
     return data;
 }
 
-// Load single CSV file
 async function loadCSV(filename, dataType) {
     try {
         const response = await fetch(`data/${filename}`);
@@ -108,7 +102,6 @@ async function loadCSV(filename, dataType) {
     }
 }
 
-// Load all CSV files
 async function loadAllData() {
     const loadingDiv = document.getElementById("loading");
     if (loadingDiv) loadingDiv.classList.remove("hidden");
@@ -122,18 +115,15 @@ async function loadAllData() {
     
     if (loadingDiv) loadingDiv.classList.add("hidden");
     
-    // Update player filters
     if (playersData.length > 0 && typeof updatePlayerFilters === 'function') {
         updatePlayerFilters();
     }
     
-    // Render active tab
     if (typeof renderActiveTab === 'function') {
         renderActiveTab();
     }
 }
 
-// Get data by type
 function getData(type) {
     switch(type) {
         case "agents": return agentsData;
@@ -144,7 +134,6 @@ function getData(type) {
     }
 }
 
-// Check if data is loaded
 function isDataLoaded(type) {
     return allDataLoaded[type] || false;
 }
