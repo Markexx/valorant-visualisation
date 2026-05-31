@@ -1,11 +1,7 @@
-// ==================== UTILS - Shared helper functions ====================
-
-// Chart dimensions (shared across all modules)
 const CHART_WIDTH = 500;
 const CHART_HEIGHT = 400;
 const CHART_MARGIN = { top: 25, right: 30, bottom: 60, left: 65 };
 
-// Tooltip functions
 function showTooltip(event, html) {
     const tooltip = d3.select("#tooltip");
     tooltip.style("opacity", 1).html(html);
@@ -21,7 +17,6 @@ function hideTooltip() {
     d3.select("#tooltip").style("opacity", 0);
 }
 
-// Show placeholder when data is not loaded yet
 function showPlaceholder(containerId, message) {
     const element = document.getElementById(containerId);
     if (element) {
@@ -29,7 +24,6 @@ function showPlaceholder(containerId, message) {
     }
 }
 
-// Clear container
 function clearContainer(containerId) {
     const element = document.getElementById(containerId);
     if (element) {
